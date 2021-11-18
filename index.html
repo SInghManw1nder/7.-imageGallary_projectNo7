@@ -16,6 +16,19 @@
     />
   </head>
   <body>
+    <!-- Made possible by the great work of David DeSandro @ https://masonry.desandro.com -->
+
+    <!-- Part 1: Add the scripts -->
+
+    <!-- Step 1: Let's start by loading jQuery. jQuery is not required for masonary to function but makes things easier  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- Step 2: Then load imagesloaded. imagesloaded makes sure the images are not displayed until they are fully loaded -->
+    <script src="https://unpkg.com/imagesloaded@4/imagesloaded.pkgd.min.js"></script>
+
+    <!-- Step 3: we load masonry -->
+    <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+
     <header class="header" id="header">
       <h2 class="logo">
         <a href="index.html">Photo Booth</a>
@@ -35,12 +48,13 @@
         </div>
       </form>
     </header>
+    <div class="overlay"></div>
 
     <div class="noInternet">
       <h1 class="noInternetMessage">Not connected to internet</h1>
     </div>
 
-    <main class="main-content"></main>
+    <main class="main-content grid"></main>
 
     <!-- <div class="view">
       <button class="view-more">View More &nbsp; &darr;</button>

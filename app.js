@@ -5,8 +5,16 @@ let api = [
   "563492ad6f9170000100000104606eb1c1244340bf2cede1c4a42568",
   "563492ad6f91700001000001226fc8f4dc9747d78c09f483b22355ce",
   "563492ad6f917000010000019b983f3b62fe43daa92e746d4553dd35",
+  "563492ad6f917000010000014060d806c66c47b88b9b4d7f8c487692",
+  "563492ad6f91700001000001ee0e9ca6636a40a2922a3057ed643c83",
+  "563492ad6f91700001000001d4bfd73691c24786accf5bfa2d13b084",
+  "563492ad6f917000010000019e8c9190f2314cdabae714932498b9c7",
+  "563492ad6f91700001000001917f4472446847cdb73382c8069c4ec2",
+  "563492ad6f9170000100000163eb6a24220b437cbd784b1cff6865cd",
+  "563492ad6f91700001000001f89041f69d0a47538b315fc967356983",
+  "563492ad6f91700001000001c5f0fdbccfbc4f36bde43e2f95914b76",
 ];
-let keyInUse = 2;
+let keyInUse = 1;
 const searchInput = document.querySelector(".search-input");
 const viewMore = document.querySelector(".view-more");
 const searchForm = document.querySelector(".search-form");
@@ -15,7 +23,8 @@ const noInternet = document.querySelector(".noInternet");
 
 let pageNumber = 1;
 let randomPageNumber = 0;
-const options = 533;
+const options = 500;
+const perPage = 30;
 
 let fetchLink;
 let currentSearch;
@@ -70,25 +79,40 @@ const apiHeaders = async (url) => {
   //   },
   // });
   let dataFetch;
+  let flag = 0;
+  let data;
+  let copyUrl = url;
   do {
-    dataFetch = await fetch(url, {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        Authorization: api[keyInUse],
-      },
-    });
+    do {
+      flag = 0;
+      dataFetch = await fetch(copyUrl, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: api[keyInUse],
+        },
+      });
 
-    if (dataFetch.status === 429) {
-      keyInUse = ++keyInUse % 3;
-    } else {
-      break;
+      if (dataFetch.status === 429) {
+        keyInUse = ++keyInUse % 11;
+      } else {
+        break;
+      }
+    } while (true);
+    // alert(dataFetch.status);
+    console.log(dataFetch.status);
+
+    data = await dataFetch.json();
+    console.log(dataFetch);
+    console.log(data);
+    console.log(data.per_page);
+    if (data.per_page === 0) {
+      flag = 1;
+      randomPageNumber = Math.floor(Math.random() * options);
+      fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
+      copyUrl = fetchLink;
     }
-  } while (true);
-  // alert(dataFetch.status);
-  console.log(dataFetch.status);
-
-  const data = await dataFetch.json();
+  } while (flag);
   return data;
 };
 
@@ -98,17 +122,18 @@ const generateMarkup = (data) => {
   data.photos.forEach((photo) => {
     const gallery = document.createElement("div");
     gallery.classList.add("gallery");
-    console.log(photo.src);
-    const source = `${photo.src.original}?auto=compress&cs=tinysrgb&h=200&w=280&dpr=1`;
-    console.log(source);
-    gallery.innerHTML = `<div class="image-holder"><img src=${source}></img>
+    gallery.classList.add("grid-item");
+    // console.log(photo.src);
+    const source = `${photo.src.medium}`;
+    // console.log(source);
+    gallery.innerHTML = `<div class="image-holder"}"><img src=${source}></img>
                 <div class="profile">
                     <a href=${photo.photographer_url} target="_blank">${photo.photographer}<a>
                     <a href=${photo.src.original} target="_blank"><img src="img/download.svg"></img></a>
                 </div>
             </div>`;
-
-    mainContent.appendChild(gallery);
+    ele(gallery);
+    // mainContent.appendChild(gallery);
   });
 };
 
@@ -117,7 +142,7 @@ const curatedPhotos = async () => {
   if (isOnline()) {
     connectedToInternet();
     randomPageNumber = Math.floor(Math.random() * options);
-    fetchLink = `https://api.pexels.com/v1/curated?per_page=15&page=${randomPageNumber}`;
+    fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
 
     const data = await apiHeaders(fetchLink);
     //Data from the Api
@@ -141,9 +166,9 @@ const searchPhotos = async (searchQuery) => {
     console.log(searchQuery);
     if (searchQuery === undefined) {
       randomPageNumber = Math.floor(Math.random() * options);
-      fetchLink = `https://api.pexels.com/v1/curated?per_page=15&page=${randomPageNumber}`;
+      fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
     } else
-      fetchLink = `https://api.pexels.com/v1/search?query=${searchQuery}&per_page=15`;
+      fetchLink = `https://api.pexels.com/v1/search?query=${searchQuery}&per_page=30`;
     const data = await apiHeaders(fetchLink);
 
     //Data from the Api
@@ -157,10 +182,10 @@ const searchPhotos = async (searchQuery) => {
 async function loadMoreImages() {
   pageNumber++;
   if (currentSearch) {
-    fetchLink = `https://api.pexels.com/v1/search?query=${currentSearch}&per_page=15&page=${pageNumber}`;
+    fetchLink = `https://api.pexels.com/v1/search?query=${currentSearch}&per_page=30&page=${pageNumber}`;
   } else {
     randomPageNumber = Math.floor(Math.random() * options);
-    fetchLink = `https://api.pexels.com/v1/curated?per_page=15&page=${randomPageNumber}`;
+    fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
   }
 
   const data = await apiHeaders(fetchLink);
@@ -180,4 +205,41 @@ function connectedToInternet() {
   mainContent.style.display = "grid";
 }
 // searchPhotos();
+
+var $grid = $(".grid").imagesLoaded(function () {
+  $(".grid").masonry({
+    columnWidth: 1,
+    itemSelector: ".grid-item",
+    horizontalOrder: false,
+    gutter: 10,
+    fitWidth: true,
+  });
+});
+function ele(gallary) {
+  // var elems = [getItemElement()];
+  $grid.masonry("layout");
+  var elems = [gallary];
+  // make jQuery object
+  var $elems = $(elems);
+  $grid.imagesLoaded(async function () {
+    $grid.append(elems).masonry("appended", elems);
+    // $grid;
+    // $grid.masonry("appended", elems);
+    await $grid.imagesLoaded().progress(function () {
+      $grid.masonry("layout");
+    });
+    $grid.imagesLoaded(function () {
+      $grid.masonry("layout");
+    });
+    $grid.masonry("layout");
+
+    // $grid.masonry('layoutItems', elems, (isStill = true));
+  });
+  // $grid.masonry('layout');
+}
+
 curatedPhotos();
+
+setTimeout(function () {
+  document.querySelector(".overlay").style.display = "none";
+}, 5000);
