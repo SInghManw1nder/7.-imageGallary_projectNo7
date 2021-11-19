@@ -12,6 +12,14 @@ body {
   background-color: #192232;
   color: white;
   /* Hide scrollbar for Chrome, Safari and Opera */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 .header {
@@ -341,12 +349,26 @@ main .gallery .profile a:nth-child(1) {
 
 .overlay {
   height: 100vh;
-  /* display: block; */
-  /* position: absolute; */
-  /* top: 224
-  px
-  ; */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
   margin: 0;
   padding: 0;
+}
+
+.overflow {
+  height: 100%;
+  overflow: hidden;
+}
+
+html,
+body {
+  height: 100%;
 }
 /*# sourceMappingURL=style.css.map */

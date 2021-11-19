@@ -14,6 +14,12 @@
       href="https://fonts.googleapis.com/css2?family=Lobster&display=swap"
       rel="stylesheet"
     />
+    <link
+      rel="stylesheet"
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+      crossorigin="anonymous"
+    />
   </head>
   <body>
     <!-- Made possible by the great work of David DeSandro @ https://masonry.desandro.com -->
@@ -48,14 +54,18 @@
         </div>
       </form>
     </header>
-    <div class="overlay"></div>
+    <div class="overlay overflow">
+      <i class="fas fa-circle-notch fa-pulse fa-7x"></i>
+    </div>
 
     <div class="noInternet">
       <h1 class="noInternetMessage">Not connected to internet</h1>
     </div>
 
     <main class="main-content grid"></main>
-
+    <div class="overlay overflow endingLoad">
+      <i class="fas fa-circle-notch fa-pulse fa-2x"></i>
+    </div>
     <!-- <div class="view">
       <button class="view-more">View More &nbsp; &darr;</button>
     </div> -->

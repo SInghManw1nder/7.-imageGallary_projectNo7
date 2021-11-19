@@ -24,7 +24,7 @@ const noInternet = document.querySelector(".noInternet");
 let pageNumber = 1;
 let randomPageNumber = 0;
 const options = 500;
-const perPage = 30;
+const perPage = 15;
 
 let fetchLink;
 let currentSearch;
@@ -39,9 +39,12 @@ searchInput.addEventListener("input", (e) => {
   searchValue = e.target.value;
 });
 searchForm.addEventListener("submit", (e) => {
+  console.clear();
   e.preventDefault();
   currentSearch = searchValue;
   searchPhotos(searchValue);
+  // document.querySelector(".overlay").style.display = "flex";
+  // document.querySelector(".main-content").style.visibility = "hidden";
 });
 
 window.addEventListener(
@@ -78,6 +81,7 @@ const apiHeaders = async (url) => {
   //     Authorization: apiKey,
   //   },
   // });
+  console.log(url.includes("query"));
   let dataFetch;
   let flag = 0;
   let data;
@@ -108,9 +112,11 @@ const apiHeaders = async (url) => {
     console.log(data.per_page);
     if (data.per_page === 0) {
       flag = 1;
-      randomPageNumber = Math.floor(Math.random() * options);
-      fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
-      copyUrl = fetchLink;
+      if (!url.includes("query")) {
+        randomPageNumber = Math.floor(Math.random() * options);
+        fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
+        copyUrl = fetchLink;
+      }
     }
   } while (flag);
   return data;
@@ -135,10 +141,35 @@ const generateMarkup = (data) => {
     ele(gallery);
     // mainContent.appendChild(gallery);
   });
+  // document.querySelector(".overlay").style.display = "none";
+  // document.querySelector(".main-content").style.visibility = "visible";
+  var currentDateTime = new Date();
+  console.log(" before setTimeout The current date time is as follows:");
+  console.log(currentDateTime);
+
+  setTimeout(function () {
+    document.querySelector(".overlay").style.display = "none";
+    document.querySelector(".main-content").style.visibility = "visible";
+      document.querySelector(".endingLoad").style.visibility = "visible";
+    // alert("searchloaded");
+    var currentDateTime2 = new Date();
+    console.log(" inside setTimeout The current date time is as follows:");
+    console.log(currentDateTime2);
+  }, 1000);
+  var currentDateTime1 = new Date();
+  console.log(" after setTimeout The current date time is as follows:");
+  console.log(currentDateTime1);
 };
 
 //Get Curated Photos
 const curatedPhotos = async () => {
+  console.clear();
+  document.querySelector(".overlay").style.display = "flex";
+  document.querySelector(".main-content").style.visibility = "hidden";
+  // var currentDateTime = new Date();
+  // console.log(" before setTimeout The current date time is as follows:");
+  // console.log(currentDateTime);
+
   if (isOnline()) {
     connectedToInternet();
     randomPageNumber = Math.floor(Math.random() * options);
@@ -150,21 +181,33 @@ const curatedPhotos = async () => {
   } else {
     notConnectedToInternet();
   }
+  // setTimeout(function () {
+  //   // document.querySelector(".overlay").style.display = "none";
+  //   // document.querySelector(".main-content").style.visibility = "visible";
+  //   var currentDateTime2 = new Date();
+  //   console.log(" inside setTimeout The current date time is as follows:");
+  //   console.log(currentDateTime2);
+  // }, 5000);
+  // var currentDateTime1 = new Date();
+  // console.log(" after setTimeout The current date time is as follows:");
+  // console.log(currentDateTime1);
 };
 
 //Clear Input
 const clearInput = () => {
   mainContent.innerHTML = "";
-  searchInput.value = "";
+  // searchInput.value = "";
 };
 
 const searchPhotos = async (searchQuery) => {
   //Clear existing images on submit
+  document.querySelector(".overlay").style.display = "flex";
+  document.querySelector(".main-content").style.visibility = "hidden";
   if (isOnline()) {
     connectedToInternet();
     clearInput();
     console.log(searchQuery);
-    if (searchQuery === undefined) {
+    if (searchQuery === undefined || searchQuery === "") {
       randomPageNumber = Math.floor(Math.random() * options);
       fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
     } else
@@ -176,6 +219,21 @@ const searchPhotos = async (searchQuery) => {
   } else {
     notConnectedToInternet();
   }
+  // var currentDateTime = new Date();
+  // console.log(" before setTimeout The current date time is as follows:");
+  // console.log(currentDateTime);
+
+  // // setTimeout(function () {
+  // //   // document.querySelector(".overlay").style.display = "none";
+  // //   // document.querySelector(".main-content").style.visibility = "visible";
+  // //   // alert("searchloaded");
+  // //   var currentDateTime2 = new Date();
+  // //   console.log(" inside setTimeout The current date time is as follows:");
+  // //   console.log(currentDateTime2);
+  // // }, 5000);
+  // var currentDateTime1 = new Date();
+  // console.log(" after setTimeout The current date time is as follows:");
+  // console.log(currentDateTime1);
 };
 
 //Load More Images
@@ -225,21 +283,19 @@ function ele(gallary) {
     $grid.append(elems).masonry("appended", elems);
     // $grid;
     // $grid.masonry("appended", elems);
-    await $grid.imagesLoaded().progress(function () {
-      $grid.masonry("layout");
-    });
+    // await $grid.imagesLoaded().progress(function () {
+    //   $grid.masonry("layout");
+    // });
     $grid.imagesLoaded(function () {
       $grid.masonry("layout");
     });
-    $grid.masonry("layout");
+    // $grid.masonry("layout");
 
     // $grid.masonry('layoutItems', elems, (isStill = true));
   });
   // $grid.masonry('layout');
 }
-
+document.querySelector(".endingLoad").style.visibility = "hidden";
 curatedPhotos();
 
-setTimeout(function () {
-  document.querySelector(".overlay").style.display = "none";
-}, 5000);
+
