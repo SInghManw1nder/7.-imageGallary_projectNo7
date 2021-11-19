@@ -48,6 +48,27 @@ searchForm.addEventListener("submit", (e) => {
 });
 
 window.addEventListener(
+  "resize",
+  function (event) {
+    console.log("resize before");
+    resize();
+    console.log("resize after");
+  },
+  true
+);
+
+function resize() {
+  $grid.imagesLoaded(function () {
+    console.log("before resize inside 1");
+    $grid.masonry("layout");
+    console.log("after resize inside 1");
+  });
+  console.log("before resize inside 2");
+  $grid.masonry("layout");
+  console.log("after resize inside 2");
+}
+
+window.addEventListener(
   "scroll",
   () => {
     const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
@@ -150,7 +171,7 @@ const generateMarkup = (data) => {
   setTimeout(function () {
     document.querySelector(".overlay").style.display = "none";
     document.querySelector(".main-content").style.visibility = "visible";
-      document.querySelector(".endingLoad").style.visibility = "visible";
+    document.querySelector(".endingLoad").style.visibility = "visible";
     // alert("searchloaded");
     var currentDateTime2 = new Date();
     console.log(" inside setTimeout The current date time is as follows:");
@@ -297,5 +318,3 @@ function ele(gallary) {
 }
 document.querySelector(".endingLoad").style.visibility = "hidden";
 curatedPhotos();
-
-
