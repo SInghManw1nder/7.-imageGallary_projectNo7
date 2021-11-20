@@ -24,7 +24,7 @@ const noInternet = document.querySelector(".noInternet");
 let pageNumber = 1;
 let randomPageNumber = 0;
 const options = 500;
-const perPage = 15;
+const perPage = 30; //perpage photos
 
 let fetchLink;
 let currentSearch;
@@ -135,7 +135,8 @@ const apiHeaders = async (url) => {
       flag = 1;
       if (!url.includes("query")) {
         randomPageNumber = Math.floor(Math.random() * options);
-        fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
+        fetchLink = `https://api.pexels.com/v1/curated?per_page=${perPage}&page=${randomPageNumber}`; //uses perpage variable
+        // fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
         copyUrl = fetchLink;
       }
     }
@@ -146,6 +147,7 @@ const apiHeaders = async (url) => {
 //imageholder item blog
 //Generate HTML Markup
 const generateMarkup = (data) => {
+  // const arr = []; //added for faster performace sending all photos at once
   data.photos.forEach((photo) => {
     const gallery = document.createElement("div");
     gallery.classList.add("gallery");
@@ -160,8 +162,20 @@ const generateMarkup = (data) => {
                 </div>
             </div>`;
     ele(gallery);
+    // arr.push(gallery);//performance faster
     // mainContent.appendChild(gallery);
   });
+  //below for faster performance
+  // console.log(arr);
+  // ele(arr);
+  // $grid.imagesLoaded(function () {
+  //   console.log("before resize inside 1");
+  //   $grid.masonry("layout");
+  //   console.log("after resize inside 1");
+  // });
+  // // console.log("before resize inside 2");
+  // // $grid.masonry("layout");
+  // // console.log("after resize inside 2");
   // document.querySelector(".overlay").style.display = "none";
   // document.querySelector(".main-content").style.visibility = "visible";
   var currentDateTime = new Date();
@@ -180,6 +194,7 @@ const generateMarkup = (data) => {
   var currentDateTime1 = new Date();
   console.log(" after setTimeout The current date time is as follows:");
   console.log(currentDateTime1);
+  document.querySelector(".endingLoad").style.display = "flex";
 };
 
 //Get Curated Photos
@@ -190,11 +205,12 @@ const curatedPhotos = async () => {
   // var currentDateTime = new Date();
   // console.log(" before setTimeout The current date time is as follows:");
   // console.log(currentDateTime);
-
+  console.log(isOnline());
   if (isOnline()) {
     connectedToInternet();
     randomPageNumber = Math.floor(Math.random() * options);
-    fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
+    fetchLink = `https://api.pexels.com/v1/curated?per_page=${perPage}&page=${randomPageNumber}`; //uses perpage variable
+    // fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
 
     const data = await apiHeaders(fetchLink);
     //Data from the Api
@@ -224,20 +240,26 @@ const searchPhotos = async (searchQuery) => {
   //Clear existing images on submit
   document.querySelector(".overlay").style.display = "flex";
   document.querySelector(".main-content").style.visibility = "hidden";
+  console.log(isOnline());
+
   if (isOnline()) {
     connectedToInternet();
     clearInput();
     console.log(searchQuery);
     if (searchQuery === undefined || searchQuery === "") {
       randomPageNumber = Math.floor(Math.random() * options);
-      fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
+      fetchLink = `https://api.pexels.com/v1/curated?per_page=${perPage}&page=${randomPageNumber}`; //uses perpage variable
+      // fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
     } else
-      fetchLink = `https://api.pexels.com/v1/search?query=${searchQuery}&per_page=30`;
+      fetchLink = `https://api.pexels.com/v1/search?query=${searchQuery}&per_page=${perPage}`; //uses perpage variable
+    // fetchLink = `https://api.pexels.com/v1/search?query=${searchQuery}&per_page=30`;
+
     const data = await apiHeaders(fetchLink);
 
     //Data from the Api
     generateMarkup(data);
   } else {
+    // alert();
     notConnectedToInternet();
   }
   // var currentDateTime = new Date();
@@ -261,10 +283,12 @@ const searchPhotos = async (searchQuery) => {
 async function loadMoreImages() {
   pageNumber++;
   if (currentSearch) {
-    fetchLink = `https://api.pexels.com/v1/search?query=${currentSearch}&per_page=30&page=${pageNumber}`;
+    fetchLink = `https://api.pexels.com/v1/search?query=${currentSearch}&per_page=${perPage}&page=${pageNumber}`; //uses perpage variable
+    // fetchLink = `https://api.pexels.com/v1/search?query=${currentSearch}&per_page=30&page=${pageNumber}`;
   } else {
     randomPageNumber = Math.floor(Math.random() * options);
-    fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
+    fetchLink = `https://api.pexels.com/v1/curated?per_page=${perPage}&page=${randomPageNumber}`; //use perPage variable
+    // fetchLink = `https://api.pexels.com/v1/curated?per_page=30&page=${randomPageNumber}`;
   }
 
   const data = await apiHeaders(fetchLink);
@@ -276,6 +300,10 @@ function isOnline() {
 }
 
 function notConnectedToInternet() {
+  // alert("not connected");
+  document.querySelector(".overlay").style.display = "none";
+  document.querySelector(".endingLoad").style.display = "none";
+
   noInternet.style.display = "flex";
   mainContent.style.display = "none";
 }
@@ -300,8 +328,12 @@ function ele(gallary) {
   var elems = [gallary];
   // make jQuery object
   var $elems = $(elems);
+
+  // var $elems = $(gallary); faster performance
   $grid.imagesLoaded(async function () {
     $grid.append(elems).masonry("appended", elems);
+
+    // $grid.append(gallary).masonry("appended", gallary);faster performance
     // $grid;
     // $grid.masonry("appended", elems);
     // await $grid.imagesLoaded().progress(function () {
@@ -310,11 +342,48 @@ function ele(gallary) {
     $grid.imagesLoaded(function () {
       $grid.masonry("layout");
     });
-    // $grid.masonry("layout");
+    // $grid.masonry("layout"); faster performance
 
-    // $grid.masonry('layoutItems', elems, (isStill = true));
+    // $grid.masonry("layoutItems", gallary, (isStill = true));faster performance
   });
   // $grid.masonry('layout');
 }
 document.querySelector(".endingLoad").style.visibility = "hidden";
 curatedPhotos();
+
+document.querySelector(".toggleTheme").addEventListener("click", function () {
+  document.querySelector(".toggleTheme").classList.toggle("fa-sun");
+  document.querySelector(".toggleTheme").classList.toggle("fa-moon");
+
+  if (document.querySelector(".toggleTheme").classList.contains("fa-sun")) {
+    document.querySelector(".header").style.backgroundColor = "black";
+    document.querySelector(".input-control input").style.backgroundColor =
+      "white";
+    document.querySelector(".input-control input").style.color = "#192232";
+
+    document.querySelector(".input-control button").style.backgroundColor =
+      "white";
+    document.body.style.backgroundColor = "black";
+    document.querySelector(".input-control button img").style.filter =
+      "brightness(0) saturate(100%) invert(0%) sepia(0%) saturate(7483%) hue-rotate(32deg) brightness(103%) contrast(104%)";
+    document.querySelector(".loadCircleBottom").style.color = "white";
+    document.querySelector(".loadCircleUp").style.color = "white";
+    document.querySelector(".noInternetMessage").style.color = "white";
+    document.querySelector(".toggleTheme").style.color = "white";
+  } else {
+    document.querySelector(".header").style.backgroundColor = "lightslategrey";
+    document.body.style.backgroundColor = "whitesmoke";
+    document.querySelector(".input-control input").style.backgroundColor =
+      "#192232";
+    document.querySelector(".input-control input").style.color = "white";
+    document.querySelector(".input-control button").style.backgroundColor =
+      "#192232";
+    document.querySelector(".input-control button img").style.filter =
+      "brightness(0) saturate(100%) invert(98%) sepia(0%) saturate(0%) hue-rotate(78deg) brightness(107%) contrast(101%)";
+    document.querySelector(".loadCircleBottom").style.color = "#192232";
+    document.querySelector(".loadCircleUp").style.color = "#192232";
+    document.querySelector(".noInternetMessage").style.color = "#192232";
+    document.querySelector(".toggleTheme").style.color = "white";
+    document.querySelector(".toggleTheme").style.textShadow = "2px 2px black";
+  }
+});

@@ -9,7 +9,7 @@
 }
 
 body {
-  background-color: #192232;
+  background-color: whitesmoke;
   color: white;
   /* Hide scrollbar for Chrome, Safari and Opera */
   -ms-overflow-style: none;
@@ -23,9 +23,9 @@ body::-webkit-scrollbar {
 }
 
 .header {
-  min-height: 20vh;
+  min-height: 15vh;
   width: 100%;
-  background-color: #25354c;
+  background-color: lightslategrey;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -42,9 +42,10 @@ body::-webkit-scrollbar {
   margin-bottom: 4rem;
 }
 
-@media screen and (max-width: 390px) {
+@media screen and (max-height: 600px) {
   .header {
-    min-height: 30vh;
+    min-height: 20vh;
+    margin-bottom: 1rem;
   }
 }
 
@@ -61,11 +62,15 @@ body::-webkit-scrollbar {
 
 .header .logo a {
   color: #fff;
+  text-shadow: 3px 2px black;
   font-family: "Lobster", cursive;
   letter-spacing: 2px;
 }
 
 .search-form {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
   width: 30%;
 }
 
@@ -99,6 +104,30 @@ body::-webkit-scrollbar {
   }
 }
 
+.toggleTheme {
+  padding: 0.4rem 0rem;
+  cursor: pointer;
+  font-size: 24px;
+}
+
+@media screen and (max-width: 1300px) {
+  .toggleTheme {
+    font-size: 24px;
+  }
+}
+
+@media screen and (max-width: 950px) {
+  .toggleTheme {
+    font-size: 24px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .toggleTheme {
+    font-size: 19px;
+  }
+}
+
 .input-control {
   width: 100%;
   margin: 0 auto;
@@ -114,8 +143,6 @@ body::-webkit-scrollbar {
   border: none;
   outline: none;
   border-radius: 25px;
-  -webkit-transition: all 0.2s ease-in-out;
-  transition: all 0.2s ease-in-out;
   background-color: #192232;
   color: white;
 }
@@ -148,6 +175,8 @@ body::-webkit-scrollbar {
 
 .input-control button img {
   height: 20px;
+  -webkit-filter: brightness(0) saturate(100%) invert(98%) sepia(0%) saturate(0%) hue-rotate(78deg) brightness(107%) contrast(101%);
+          filter: brightness(0) saturate(100%) invert(98%) sepia(0%) saturate(0%) hue-rotate(78deg) brightness(107%) contrast(101%);
 }
 
 @media (min-width: 300px) {
@@ -370,5 +399,16 @@ main .gallery .profile a:nth-child(1) {
 html,
 body {
   height: 100%;
+}
+
+.loadCircleBottom,
+.loadCircleUp,
+.noInternetMessage {
+  color: #192232;
+}
+
+.toggleTheme {
+  color: white;
+  text-shadow: 2px 2px black;
 }
 /*# sourceMappingURL=style.css.map */
